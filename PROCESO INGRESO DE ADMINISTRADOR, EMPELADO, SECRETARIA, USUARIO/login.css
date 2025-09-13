@@ -9,8 +9,8 @@ body, html {
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     display: flex;
     flex-direction: column;
-        background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
-                url('https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg') no-repeat center center / cover;
+        background: linear-gradient(rgba(0, 0, 0, 0.233), rgba(0, 0, 0, 0.185)),
+                url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Plaza_de_Bolivar%2C_Bogota%2C_Colombia_%285770632336%29.jpg/1200px-Plaza_de_Bolivar%2C_Bogota%2C_Colombia_%285770632336%29.jpg') no-repeat center center / cover;
 
     position: relative;
 }
