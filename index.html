@@ -631,7 +631,7 @@ button:active {
                 <a href="#turismo">Turismo</a>
                 <a href="#eventos">Eventos</a>
             </nav>
-            <button id="btnGenerarReporte" class="btn-primary" style="margin-left: auto; padding: 8px 16px; font-size: 14px;">Generar Reporte Básico</button>
+            <!--<button id="btnGenerarReporte" class="btn-primary" style="margin-left: auto; padding: 8px 16px; font-size: 14px;">Generar Reporte Básico</button>-->
             <script>
                 document.getElementById('btnGenerarReporte').addEventListener('click', async () => {
                     const apiUrl = "https://www.datos.gov.co/resource/2pnw-mmge.json?$limit=10";
@@ -906,7 +906,7 @@ button:active {
                     <div class="stat-label">Usuarios</div>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 20px;">
+            <div style="text-align: center;">
                 <form action="generate_report.php" method="post">
                     <button type="submit" class="btn-primary">Generar Reporte Básico</button>
                 </form>
