@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre Bogotá D.C.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: #1e40af;
+            border-bottom-color: #1e40af;
+        }
+
+        .search-btn {
+            background: #1e40af;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            letter-spacing: -0.025em;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Search Section */
+        .search-section {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-button {
+            background: #1e40af;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .filter-tab:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .filter-tab.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 24px;
+            letter-spacing: -0.025em;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-footer span {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #1e40af;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* Map Container */
+        .map-container {
+            height: 400px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .map-container:hover {
+            border-color: #1e40af;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 280px;
+        }
+
+        .map-overlay h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .map-overlay p {
+            margin-bottom: 16px;
+            color: #64748b;
+        }
+
+        /* Results Section */
+        .results-item {
+            display: flex;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .results-item:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateX(4px);
+        }
+
+        .results-image {
+            width: 120px;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .results-content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .results-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0f172a;
+            font-size: 1.1rem;
+        }
+
+        .results-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Admin Panel Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 32px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .close {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s ease;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .close:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .search-section {
+                flex-direction: column;
+                max-width: none;
+            }
+
+            .filter-tabs {
+                gap: 6px;
+            }
+
+            .filter-tab {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .hero {
+                padding: 40px 24px;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-item {
+                flex-direction: column;
+            }
+
+            .results-image {
+                width: 100%;
+                height: 120px;
+            }
+
+            .map-overlay {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin: 20px;
+                max-width: none;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Image placeholders with gradients */
+        .img-candelaria { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .img-monserrate { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .img-palacio { background: linear-gradient(135deg, #059669, #047857); }
+        .img-festival { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .img-concierto { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+        .img-arte { background: linear-gradient(135deg, #0891b2, #0e7490); }
+        .img-ciclorruta { background: linear-gradient(135deg, #ea580c, #dc2626); }
+        .img-humedales { background: linear-gradient(135deg, #059669, #047857); }
+        .img-ruta-candelaria { background: linear-gradient(135deg, #7c2d12, #a16207); }
+        .img-museo-botero { background: linear-gradient(135deg, #be123c, #a21caf); }
+        .img-oro { background: linear-gradient(135deg, #ca8a04, #a16207); }
+        .img-parque { background: linear-gradient(135deg, #059669, #047857); }
+        .img-zona-rosa { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">Bogotá Travel</a>
+            <nav class="nav-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#cultura">Cultura</a>
+                <a href="#gastronomia">Gastronomía</a>
+                <a href="#turismo">Turismo</a>
+                <a href="#eventos">Eventos</a>
+            </nav>
+            <button class="search-btn">Buscar destino</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Descubre Bogotá D.C.</h1>
+            <p>Encuentra los mejores destinos, cultura, gastronomía y experiencias que ofrece la capital de Colombia</p>
+            
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="¿Qué quieres hacer en Bogotá?" id="searchInput">
+                <button class="search-button" onclick="performSearch()">
+                    <span id="searchText">Buscar</span>
+                    <div class="loading" id="loadingSpinner" style="display: none;"></div>
+                </button>
+            </div>
+
+            <div class="filter-tabs">
+                <div class="filter-tab active" onclick="setActiveFilter(this, 'cultura')">
+                    🏛️ Cultura
+                </div>
+                <div class="filter-tab" onclick="setActiveFilter(this, 'gastronomia')">
+                    🍽️ Gastronomía
+                </div>
+                <div class="filter-tab" onclick="setActiveFilter(this, 'arte')">
+                    🎨 Arte y museos
+                </div>
+                <div class="filter-tab" onclick="setActiveFilter(this, 'transporte')">
+                    🚌 Transporte
+                </div>
+            </div>
+        </section>
+
+        <!-- Lugares Populares -->
+        <section class="section" id="lugares-populares">
+            <h2>Lugares Populares</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-image img-candelaria"></div>
+                    <div class="card-content">
+                        <div class="card-title">La Candelaria</div>
+                        <div class="card-description">Centro histórico y cultural de Bogotá, donde se encuentra la arquitectura colonial más importante de la ciudad.</div>
+                        <div class="card-footer">
+                            <span>Gratuito</span>
+                            <button class="btn-primary" onclick="showDetails('candelaria')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-monserrate"></div>
+                    <div class="card-content">
+                        <div class="card-title">Cerro de Monserrate</div>
+                        <div class="card-description">A 3,152 metros sobre el nivel del mar, ofrece la mejor vista panorámica de toda la ciudad.</div>
+                        <div class="card-footer">
+                            <span>Teleférico</span>
+                            <button class="btn-primary" onclick="showDetails('monserrate')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-palacio"></div>
+                    <div class="card-content">
+                        <div class="card-title">Palacio Bolívar</div>
+                        <div class="card-description">Sede del Congreso de la República, ejemplo excepcional de arquitectura neoclásica.</div>
+                        <div class="card-footer">
+                            <span>Admisión</span>
+                            <button class="btn-primary" onclick="showDetails('palacio')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Eventos Próximos -->
+        <section class="section" id="eventos-proximos">
+            <h2>Eventos Próximos</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-image img-festival"></div>
+                    <div class="card-content">
+                        <div class="card-title">Festival Gastronómico</div>
+                        <div class="card-description">Una celebración de la diversidad culinaria bogotana con los mejores chefs de la ciudad.</div>
+                        <div class="card-footer">
+                            <span>16 Sep</span>
+                            <button class="btn-primary">Ver evento</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-concierto"></div>
+                    <div class="card-content">
+                        <div class="card-title">Concierto al Parque</div>
+                        <div class="card-description">Música en vivo en los parques más emblemáticos de Bogotá con artistas nacionales.</div>
+                        <div class="card-footer">
+                            <span>20 Sep</span>
+                            <button class="btn-primary">Ver evento</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-arte"></div>
+                    <div class="card-content">
+                        <div class="card-title">Feria de Arte</div>
+                        <div class="card-description">Exposición de arte contemporáneo que reúne a los artistas más destacados del país.</div>
+                        <div class="card-footer">
+                            <span>25 Sep</span>
+                            <button class="btn-primary">Ver evento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rutas Sugeridas -->
+        <section class="section" id="rutas-sugeridas">
+            <h2>Rutas Sugeridas</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-image img-ciclorruta"></div>
+                    <div class="card-content">
+                        <div class="card-title">Ciclorruta del Camino Real</div>
+                        <div class="card-description">Recorrido histórico en bicicleta por los caminos que conectaban la capital colonial.</div>
+                        <div class="card-footer">
+                            <span>Gratuito</span>
+                            <button class="btn-primary">Ver ruta</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-humedales"></div>
+                    <div class="card-content">
+                        <div class="card-title">Corredor de Humedales</div>
+                        <div class="card-description">Descubre la biodiversidad urbana en los ecosistemas acuáticos de la sabana.</div>
+                        <div class="card-footer">
+                            <span>Gratuito</span>
+                            <button class="btn-primary">Ver ruta</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image img-ruta-candelaria"></div>
+                    <div class="card-content">
+                        <div class="card-title">Ruta por la Candelaria</div>
+                        <div class="card-description">Un recorrido peatonal por el arte urbano y la arquitectura colonial del centro histórico.</div>
+                        <div class="card-footer">
+                            <span>Gratuito</span>
+                            <button class="btn-primary">Ver ruta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resultados de Búsqueda -->
+        <section class="section" id="searchResults" style="display: none;">
+            <h2>Resultados de Búsqueda</h2>
+            <div id="resultsContainer"></div>
+        </section>
+
+        <!-- Mapa Interactivo -->
+        <section class="section" id="mapa-interactivo">
+            <h2>Mapa Interactivo</h2>
+            <div class="map-container" onclick="toggleMapInteraction()">
+                <div class="map-overlay">
+                    <h3>Explora Bogotá</h3>
+                    <p>Descubre ubicaciones, rutas y puntos de interés en el mapa interactivo de la ciudad.</p>
+                    <button class="btn-primary">Ver mapa completo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Museo Botero -->
+        <section class="section" id="museo-botero">
+            <h2>Museo Botero</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-image img-museo-botero"></div>
+                    <div class="card-content">
+                        <div class="card-title">Colección Permanente</div>
+                        <div class="card-description">Obras del maestro Fernando Botero y su colección personal de arte internacional.</div>
+                        <div class="card-footer">
+                            <span>Gratuito</span>
+                            <button class="btn-primary">Más información</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Administración -->
+        <section class="section" id="panel-admin">
+            <h2>Panel de Administración y Analíticas</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" style="color: #dc2626;">12,450</div>
+                    <div class="stat-label">Visitantes del sitio</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" style="color: #0891b2;">4,290</div>
+                    <div class="stat-label">Páginas de visita</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" style="color: #059669;">3,150</div>
+                    <div class="stat-label">Descargas</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" style="color: #ca8a04;">1,540</div>
+                    <div class="stat-label">Usuarios</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let activeFilter = 'cultura';
+        let isSearching = false;
+        
+        function setActiveFilter(element, filter) {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            element.classList.add('active');
+            activeFilter = filter;
+            filterContent(filter);
+        }
+
+        function filterContent(filter) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const sectionId = section.id;
+                let shouldShow = false;
+                
+                switch(filter) {
+                    case 'cultura':
+                        shouldShow = ['lugares-populares', 'museo-botero'].includes(sectionId);
+                        break;
+                    case 'gastronomia':
+                        shouldShow = ['eventos-proximos'].includes(sectionId);
+                        break;
+                    case 'arte':
+                        shouldShow = ['museo-botero', 'rutas-sugeridas'].includes(sectionId);
+                        break;
+                    case 'transporte':
+                        shouldShow = ['rutas-sugeridas', 'mapa-interactivo'].includes(sectionId);
+                        break;
+                    default:
+                        shouldShow = !['searchResults', 'panel-admin'].includes(sectionId);
+                }
+                
+                section.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+
+        function performSearch() {
+            if (isSearching) return;
+            
+            const searchTerm = document.getElementById('searchInput').value;
+            const resultsSection = document.getElementById('searchResults');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchButton = document.querySelector('.search-button');
+            const searchText = document.getElementById('searchText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            if (searchTerm.trim() === '') {
+                resultsSection.style.display = 'none';
+                return;
+            }
+
+            isSearching = true;
+            searchText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
+
+            setTimeout(() => {
+                resultsSection.style.display = 'block';
+                
+                const mockResults = [
+                    {
+                        title: "Museo del Oro",
+                        description: "La colección de arte precolombino más importante del mundo",
+                        image: "img-oro"
+                    },
+                    {
+                        title: "Parque Simón Bolívar",
+                        description: "El pulmón verde más grande de Bogotá",
+                        image: "img-parque"
+                    },
+                    {
+                        title: "Zona Rosa",
+                        description: "Distrito gastronómico y de entretenimiento",
+                        image: "img-zona-rosa"
+                    }
+                ];
+
+                resultsContainer.innerHTML = '';
+                mockResults.forEach((result) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'results-item';
+                    resultItem.innerHTML = `
+                        <div class="results-image ${result.image}"></div>
+                        <div class="results-content">
+                            <div class="results-title">${result.title}</div>
+                            <div class="results-description">${result.description}</div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <button class="btn-primary">Visitar</button>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(resultItem);
+                });
+
+                isSearching = false;
+                searchText.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
+                
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+
+        function showDetails(place) {
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('modalContent');
+            
+            const placeDetails = {
+                candelaria: {
+                    title: "La Candelaria",
+                    description: "El centro histórico de Bogotá, donde se encuentran los principales museos, teatros y sitios de interés cultural de la capital.",
+                    details: `
+                        <div style="margin-bottom: 20px;">
+                            <strong>Ubicación:</strong> Centro de Bogotá<br>
+                            <strong>Horarios:</strong> 24 horas<br>
+                            <strong>Acceso:</strong> Gratuito<br>
+                            <strong>Transporte:</strong> Estación TransMilenio Las Aguas
+                        </div>
+                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                            <strong>Recomendación:</strong> Visita en las mañanas para evitar multitudes y aprovecha los tours guiados gratuitos disponibles.
+                        </div>
+                    `
+                },
+                monserrate: {
+                    title: "Cerro de Monserrate",
+                    description: "A 3,152 metros sobre el nivel del mar, Monserrate ofrece la vista panorámica más espectacular de Bogotá.",
+                    details: `
+                        <div style="margin-bottom: 20px;">
+                            <strong>Altura:</strong> 3,152 m.s.n.m.<br>
+                            <strong>Horarios:</strong> 6:30 AM - 8:00 PM<br>
+                            <strong>Teleférico:</strong> $25,000 COP<br>
+                            <strong>Funicular:</strong> Disponible como alternativa
+                        </div>
+                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                            <strong>Consejo:</strong> Lleva abrigo, la temperatura puede descender significativamente en la cima.
+                        </div>
+                    `
+                },
+                palacio: {
+                    title: "Palacio Bolívar",
+                    description: "Sede del Congreso de la República, ejemplo excepcional de arquitectura neoclásica en el corazón de la capital.",
+                    details: `
+                        <div style="margin-bottom: 20px;">
+                            <strong>Función:</strong> Sede del Congreso de Colombia<br>
+                            <strong>Visitas:</strong> Lunes a Viernes<br>
+                            <strong>Requisitos:</strong> Previa cita<br>
+                            <strong>Entrada:</strong> Gratuita con documento de identidad
+                        </div>
+                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                            <strong>Importante:</strong> Las visitas deben agendarse con anticipación a través del sitio web oficial del Congreso.
+                        </div>
+                    `
+                }
+            };
+            
+            const info = placeDetails[place];
+            if (info) {
+                content.innerHTML = `
+                    <h2 style="color: #0f172a; margin-bottom: 16px; font-size: 1.5rem;">${info.title}</h2>
+                    <p style="margin-bottom: 24px; color: #64748b; line-height: 1.6;">${info.description}</p>
+                    ${info.details}
+                    <div style="margin-top: 24px; text-align: right;">
+                        <button class="btn-primary" onclick="closeModal()">Cerrar</button>
+                    </div>
+                `;
+                
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function toggleMapInteraction() {
+            alert('Funcionalidad de mapa interactivo. En la implementación completa, aquí se abriría un mapa detallado de Bogotá con marcadores de todos los puntos de interés.');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initialize with default filter
+        document.addEventListener('DOMContentLoaded', function() {
+            filterContent('cultura');
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
