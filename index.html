@@ -906,236 +906,709 @@ button:active {
     </div>
 
     <script>
-        let activeFilter = 'cultura';
-        let isSearching = false;
-        
-        function setActiveFilter(element, filter) {
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            element.classList.add('active');
-            activeFilter = filter;
-            filterContent(filter);
-        }
+// Variables globales
+let activeFilter = 'cultura';
+let isSearching = false;
 
-        function filterContent(filter) {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                const sectionId = section.id;
-                let shouldShow = false;
-                
-                switch(filter) {
-                    case 'cultura':
-                        shouldShow = ['lugares-populares', 'museo-botero'].includes(sectionId);
-                        break;
-                    case 'gastronomia':
-                        shouldShow = ['eventos-proximos'].includes(sectionId);
-                        break;
-                    case 'arte':
-                        shouldShow = ['museo-botero', 'rutas-sugeridas'].includes(sectionId);
-                        break;
-                    case 'transporte':
-                        shouldShow = ['rutas-sugeridas', 'mapa-interactivo'].includes(sectionId);
-                        break;
-                    default:
-                        shouldShow = !['searchResults', 'panel-admin'].includes(sectionId);
-                }
-                
-                section.style.display = shouldShow ? 'block' : 'none';
-            });
-        }
+// Función para esperar a que el DOM esté listo
+function domReady(callback) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', callback);
+    } else {
+        callback();
+    }
+}
 
-        function performSearch() {
-            if (isSearching) return;
+// Inicialización principal
+domReady(function() {
+    console.log('DOM cargado, inicializando aplicación...');
+    
+    // Configurar filtros por defecto
+    filterContent('cultura');
+    
+    // Configurar event listeners
+    setupEventListeners();
+    
+    // Configurar navegación suave
+    setupSmoothScrolling();
+    
+    console.log('Aplicación inicializada correctamente');
+});
 
-            const searchTerm = document.getElementById('searchInput').value;
-            const searchModal = document.getElementById('searchModal');
-            const searchResultsContainer = document.getElementById('searchResultsContainer');
-            const searchText = document.getElementById('searchText');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-
-            if (searchTerm.trim() === '') {
-                alert('Por favor, ingresa un término de búsqueda.');
-                return;
-            }
-
-            console.log('Iniciando búsqueda para:', searchTerm);
-
-            isSearching = true;
-            searchText.style.display = 'none';
-            loadingSpinner.style.display = 'inline-block';
-
-            // Show modal immediately with loading message
-            searchResultsContainer.innerHTML = '<p>Buscando...</p>';
-            if (searchModal) {
-                searchModal.style.display = 'block';
-                console.log('Modal mostrado');
-            } else {
-                alert('No se pudo encontrar el modal de búsqueda.');
-                return;
-            }
-
-            // Fetch data from Bogotá open data API filtering by destino_zona
-fetch(`https://www.datos.gov.co/resource/2pnw-mmge.json?q=${encodeURIComponent(searchTerm)}`)
-                .then(response => {
-                    console.log('Respuesta de API:', response.status, response.statusText);
-                    if (!response.ok) {
-                        throw new Error(`Error al obtener datos de la API: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Datos recibidos:', data);
-                    let results = data;
-
-                    searchResultsContainer.innerHTML = '';
-
-                    if (!results || results.length === 0) {
-                        searchResultsContainer.innerHTML = '<p>No se encontraron resultados para la búsqueda.</p>';
-                    } else {
-                        results.forEach(item => {
-                            const resultItem = document.createElement('div');
-                            resultItem.className = 'results-item';
-                            resultItem.innerHTML = `
-                                <div class="results-content">
-                                    <div class="results-title">${item.nombre_estacion || item.nombre || 'Sin nombre'}</div>
-                                    <div class="results-description">${item.descripcion || `Zona: ${item.destino_zona || 'N/A'}`}</div>
-                                </div>
-                            `;
-                            searchResultsContainer.appendChild(resultItem);
-                        });
-                    }
-
-                    isSearching = false;
-                    searchText.style.display = 'inline';
-                    loadingSpinner.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error en la búsqueda:', error);
-                    searchResultsContainer.innerHTML = '<p>Error al realizar la búsqueda. Por favor, intenta de nuevo más tarde.</p>';
-                    isSearching = false;
-                    searchText.style.display = 'inline';
-                    loadingSpinner.style.display = 'none';
-                });
-        }
-
-        function showDetails(place) {
-            const modal = document.getElementById('detailModal');
-            const content = document.getElementById('modalContent');
-            
-            const placeDetails = {
-                candelaria: {
-                    title: "La Candelaria",
-                    description: "El centro histórico de Bogotá, donde se encuentran los principales museos, teatros y sitios de interés cultural de la capital.",
-                    details: `
-                        <div style="margin-bottom: 20px;">
-                            <strong>Ubicación:</strong> Centro de Bogotá<br>
-                            <strong>Horarios:</strong> 24 horas<br>
-                            <strong>Acceso:</strong> Gratuito<br>
-                            <strong>Transporte:</strong> Estación TransMilenio Las Aguas
-                        </div>
-                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
-                            <strong>Recomendación:</strong> Visita en las mañanas para evitar multitudes y aprovecha los tours guiados gratuitos disponibles.
-                        </div>
-                    `
-                },
-                monserrate: {
-                    title: "Cerro de Monserrate",
-                    description: "A 3,152 metros sobre el nivel del mar, Monserrate ofrece la vista panorámica más espectacular de Bogotá.",
-                    details: `
-                        <div style="margin-bottom: 20px;">
-                            <strong>Altura:</strong> 3,152 m.s.n.m.<br>
-                            <strong>Horarios:</strong> 6:30 AM - 8:00 PM<br>
-                            <strong>Teleférico:</strong> $25,000 COP<br>
-                            <strong>Funicular:</strong> Disponible como alternativa
-                        </div>
-                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
-                            <strong>Consejo:</strong> Lleva abrigo, la temperatura puede descender significativamente en la cima.
-                        </div>
-                    `
-                },
-                palacio: {
-                    title: "Palacio Bolívar",
-                    description: "Sede del Congreso de la República, ejemplo excepcional de arquitectura neoclásica en el corazón de la capital.",
-                    details: `
-                        <div style="margin-bottom: 20px;">
-                            <strong>Función:</strong> Sede del Congreso de Colombia<br>
-                            <strong>Visitas:</strong> Lunes a Viernes<br>
-                            <strong>Requisitos:</strong> Previa cita<br>
-                            <strong>Entrada:</strong> Gratuita con documento de identidad
-                        </div>
-                        <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
-                            <strong>Importante:</strong> Las visitas deben agendarse con anticipación a través del sitio web oficial del Congreso.
-                        </div>
-                    `
-                }
-            };
-            
-            const info = placeDetails[place];
-            if (info) {
-                content.innerHTML = `
-                    <h2 style="color: #0f172a; margin-bottom: 16px; font-size: 1.5rem;">${info.title}</h2>
-                    <p style="margin-bottom: 24px; color: #64748b; line-height: 1.6;">${info.description}</p>
-                    ${info.details}
-                    <div style="margin-top: 24px; text-align: right;">
-                        <button class="btn-primary" onclick="closeModal()">Cerrar</button>
-                    </div>
-                `;
-                
-                modal.style.display = 'block';
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
-
-        function closeSearchModal() {
-            document.getElementById('searchModal').style.display = 'none';
-        }
-
-        function toggleMapInteraction() {
-            alert('Funcionalidad de mapa interactivo. En la implementación completa, aquí se abriría un mapa detallado de Bogotá con marcadores de todos los puntos de interés.');
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const detailModal = document.getElementById('detailModal');
-            const searchModal = document.getElementById('searchModal');
-            if (event.target === detailModal) {
-                closeModal();
-            }
-            if (event.target === searchModal) {
-                closeSearchModal();
-            }
-        }
-
-        // Search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+function setupEventListeners() {
+    // Event listener para el input de búsqueda
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                console.log('Enter presionado en búsqueda');
                 performSearch();
             }
         });
+        console.log('Event listener de búsqueda configurado');
+    } else {
+        console.warn('Input de búsqueda no encontrado');
+    }
 
-        // Initialize with default filter
-        document.addEventListener('DOMContentLoaded', function() {
-            filterContent('cultura');
-        });
+    // Event listener para cerrar modales haciendo clic fuera
+    window.addEventListener('click', function(event) {
+        const detailModal = document.getElementById('detailModal');
+        const searchModal = document.getElementById('searchModal');
+        
+        if (event.target === detailModal) {
+            closeModal();
+        }
+        if (event.target === searchModal) {
+            closeSearchModal();
+        }
+    });
 
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+    // Configurar botones de búsqueda si existen
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        searchButton.addEventListener('click', performSearch);
+        console.log('Botón de búsqueda configurado');
+    }
+
+    // Configurar botones de cierre de modal
+    const closeButtons = document.querySelectorAll('[data-close-modal]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalType = this.getAttribute('data-close-modal');
+            if (modalType === 'search') {
+                closeSearchModal();
+            } else if (modalType === 'detail') {
+                closeModal();
+            }
         });
+    });
+}
+
+function setActiveFilter(element, filter) {
+    console.log('Cambiando filtro a:', filter);
+    
+    // Remover clase activa de todos los tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Agregar clase activa al elemento seleccionado
+    if (element) {
+        element.classList.add('active');
+    }
+    
+    activeFilter = filter;
+    filterContent(filter);
+}
+
+function filterContent(filter) {
+    console.log('Filtrando contenido por:', filter);
+    
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        const sectionId = section.id;
+        let shouldShow = false;
+        
+        switch(filter) {
+            case 'cultura':
+                shouldShow = ['lugares-populares', 'museo-botero'].includes(sectionId);
+                break;
+            case 'gastronomia':
+                shouldShow = ['eventos-proximos'].includes(sectionId);
+                break;
+            case 'arte':
+                shouldShow = ['museo-botero', 'rutas-sugeridas'].includes(sectionId);
+                break;
+            case 'transporte':
+                shouldShow = ['rutas-sugeridas', 'mapa-interactivo'].includes(sectionId);
+                break;
+            default:
+                shouldShow = !['searchResults', 'panel-admin'].includes(sectionId);
+        }
+        
+        section.style.display = shouldShow ? 'block' : 'none';
+    });
+}
+
+function performSearch() {
+    console.log('=== INICIANDO BÚSQUEDA ===');
+    
+    if (isSearching) {
+        console.log('Búsqueda en progreso, ignorando nueva búsqueda');
+        return;
+    }
+
+    // Obtener elementos del DOM
+    const searchInput = document.getElementById('searchInput');
+    const searchModal = document.getElementById('searchModal');
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    const searchText = document.getElementById('searchText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    // Validaciones
+    if (!searchInput) {
+        console.error('Input de búsqueda no encontrado');
+        alert('Error: Campo de búsqueda no encontrado');
+        return;
+    }
+
+    const searchTerm = searchInput.value.trim();
+    if (!searchTerm) {
+        alert('Por favor, ingresa un término de búsqueda.');
+        return;
+    }
+
+    if (!searchModal || !searchResultsContainer) {
+        console.error('Elementos del modal no encontrados');
+        alert('Error: Modal de búsqueda no encontrado');
+        return;
+    }
+
+    console.log('Término de búsqueda:', searchTerm);
+
+    // Configurar estado de búsqueda
+    isSearching = true;
+    
+    // Actualizar UI
+    if (searchText) {
+        searchText.style.display = 'none';
+        console.log('Texto de búsqueda ocultado');
+    }
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'inline-block';
+        console.log('Spinner mostrado');
+    }
+
+    // Mostrar modal con mensaje de carga
+    searchResultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;"><p>Buscando datos de Bogotá...</p></div>';
+    searchModal.style.display = 'block';
+    console.log('Modal de búsqueda mostrado');
+
+    // Intentar búsqueda con múltiples APIs
+    tryMultipleAPIs(searchTerm);
+}
+
+function tryMultipleAPIs(searchTerm) {
+    console.log('=== INTENTANDO MÚLTIPLES APIs ===');
+    
+    // URLs de diferentes endpoints para probar
+    const apiConfigs = [
+        {
+            name: 'API Bogotá - Búsqueda por zona',
+            url: `https://www.datos.gov.co/resource/2pnw-mmge.json?destino_zona=${encodeURIComponent(searchTerm)}&$limit=10`
+        },
+        {
+            name: 'API Bogotá - Búsqueda por estación',
+            url: `https://www.datos.gov.co/resource/2pnw-mmge.json?nombre_estacion=${encodeURIComponent(searchTerm)}&$limit=10`
+        },
+        {
+            name: 'API Bogotá - Datos generales',
+            url: `https://www.datos.gov.co/resource/2pnw-mmge.json?$limit=50`
+        }
+    ];
+
+    let currentIndex = 0;
+
+    function tryNextAPI() {
+        if (currentIndex >= apiConfigs.length) {
+            console.log('Todas las APIs fallaron, usando datos de ejemplo');
+            useExampleData(searchTerm);
+            return;
+        }
+
+        const config = apiConfigs[currentIndex];
+        console.log(`Probando ${config.name}:`, config.url);
+
+        fetch(config.url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'Bogota-Guide-App/1.0'
+            }
+        })
+        .then(response => {
+            console.log(`Respuesta de ${config.name}:`, response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log(`Datos recibidos de ${config.name}:`, data?.length || 0, 'elementos');
+            
+            let processedData = data;
+            
+            // Si es el endpoint general, filtrar localmente
+            if (currentIndex === 2 && Array.isArray(data) && data.length > 0) {
+                processedData = data.filter(item => {
+                    const zona = (item.destino_zona || '').toLowerCase();
+                    const nombre = (item.nombre_estacion || '').toLowerCase();
+                    const searchLower = searchTerm.toLowerCase();
+                    
+                    return zona.includes(searchLower) || nombre.includes(searchLower);
+                });
+                console.log('Datos filtrados localmente:', processedData.length);
+            }
+            
+            displaySearchResults(processedData, searchTerm);
+        })
+        .catch(error => {
+            console.error(`Error en ${config.name}:`, error.message);
+            currentIndex++;
+            tryNextAPI();
+        })
+        .finally(() => {
+            resetSearchUI();
+        });
+    }
+
+    tryNextAPI();
+}
+
+function resetSearchUI() {
+    isSearching = false;
+    
+    const searchText = document.getElementById('searchText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    if (searchText) {
+        searchText.style.display = 'inline';
+    }
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'none';
+    }
+    
+    console.log('UI de búsqueda restaurada');
+}
+
+function useExampleData(searchTerm) {
+    console.log('=== USANDO DATOS DE EJEMPLO ===');
+    
+    const exampleData = [
+        {
+            nombre_estacion: "Portal Norte",
+            destino_zona: "Suba",
+            descripcion: "Terminal principal del TransMilenio en el norte de Bogotá, conecta con múltiples rutas alimentadoras",
+            tipo_estacion: "Portal",
+            estado: "Operativo"
+        },
+        {
+            nombre_estacion: "Universidades",
+            destino_zona: "Chapinero",
+            descripcion: "Estación ubicada en la zona universitaria, cerca de importantes instituciones educativas",
+            tipo_estacion: "Intermedia",
+            estado: "Operativo"
+        },
+        {
+            nombre_estacion: "Las Aguas",
+            destino_zona: "Centro",
+            descripcion: "Estación cercana al centro histórico y la Candelaria",
+            tipo_estacion: "Intermedia",
+            estado: "Operativo"
+        },
+        {
+            nombre_estacion: "Portal Sur",
+            destino_zona: "Bosa",
+            descripcion: "Terminal sur del sistema TransMilenio con conexiones a barrios del sur",
+            tipo_estacion: "Portal",
+            estado: "Operativo"
+        },
+        {
+            nombre_estacion: "Zona Rosa",
+            destino_zona: "Chapinero",
+            descripcion: "Estación en el corazón comercial y gastronómico de la zona norte",
+            tipo_estacion: "Intermedia",
+            estado: "Operativo"
+        },
+        {
+            nombre_estacion: "Centro Internacional",
+            destino_zona: "Centro",
+            descripcion: "Estación en la zona financiera y comercial del centro de la ciudad",
+            tipo_estacion: "Intermedia",
+            estado: "Operativo"
+        }
+    ];
+
+    // Filtrar datos de ejemplo
+    const searchLower = searchTerm.toLowerCase();
+    const filteredData = exampleData.filter(item => {
+        const zona = (item.destino_zona || '').toLowerCase();
+        const nombre = (item.nombre_estacion || '').toLowerCase();
+        const descripcion = (item.descripcion || '').toLowerCase();
+        
+        return zona.includes(searchLower) || 
+               nombre.includes(searchLower) || 
+               descripcion.includes(searchLower);
+    });
+
+    console.log('Datos de ejemplo filtrados:', filteredData.length);
+    displaySearchResults(filteredData, searchTerm, true);
+}
+
+function displaySearchResults(data, searchTerm, isExample = false) {
+    console.log('=== MOSTRANDO RESULTADOS ===');
+    console.log('Datos recibidos:', data?.length || 0, 'elementos');
+    
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    
+    if (!searchResultsContainer) {
+        console.error('Container de resultados no encontrado');
+        return;
+    }
+
+    // Limpiar contenedor
+    searchResultsContainer.innerHTML = '';
+
+    // Crear encabezado
+    const header = document.createElement('div');
+    header.style.cssText = `
+        padding: 15px;
+        background: ${isExample ? '#fff3cd' : '#f8f9fa'};
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+    `;
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+        header.innerHTML = `
+            <div style="text-align: center;">
+                <h3 style="margin: 0 0 10px 0; color: #6c757d;">No se encontraron resultados</h3>
+                <p style="margin: 0;">No hay datos para: <strong>"${searchTerm}"</strong></p>
+                ${isExample ? '' : `
+                    <button onclick="useExampleData('${searchTerm}')" style="
+                        margin-top: 15px;
+                        padding: 8px 16px;
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    ">Ver ejemplos de Bogotá</button>
+                `}
+                <div style="margin-top: 15px; font-size: 14px; color: #6c757d;">
+                    <strong>Términos sugeridos:</strong><br>
+                    Suba, Chapinero, Centro, Bosa, Portal, Universidades
+                </div>
+            </div>
+        `;
+        searchResultsContainer.appendChild(header);
+        return;
+    }
+
+    // Mostrar encabezado con resultados
+    header.innerHTML = `
+        ${isExample ? '📋 Datos de ejemplo - ' : '📍 '}
+        ${data.length} resultado(s) para "${searchTerm}"
+        ${isExample ? '<div style="font-size: 12px; font-weight: normal; color: #856404; margin-top: 5px;">API no disponible, mostrando datos de muestra</div>' : ''}
+    `;
+    searchResultsContainer.appendChild(header);
+
+    // Crear contenedor scrolleable
+    const resultsWrapper = document.createElement('div');
+    resultsWrapper.style.cssText = `
+        max-height: 350px;
+        overflow-y: auto;
+        padding: 10px;
+    `;
+
+    // Procesar cada resultado
+    data.forEach((item, index) => {
+        const resultItem = createResultItem(item, index);
+        resultsWrapper.appendChild(resultItem);
+    });
+
+    searchResultsContainer.appendChild(resultsWrapper);
+    console.log('Resultados mostrados correctamente');
+}
+
+function createResultItem(item, index) {
+    console.log(`Creando item ${index}:`, item);
+    
+    const resultItem = document.createElement('div');
+    resultItem.className = 'result-item';
+    resultItem.style.cssText = `
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 15px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    `;
+
+    // Extraer información
+    const nombre = item.nombre_estacion || item.nombre || item.destino_zona || 'Sin nombre';
+    const zona = item.destino_zona || 'Zona no especificada';
+    const descripcion = item.descripcion || `Estación ubicada en ${zona}`;
+    const tipo = item.tipo_estacion || 'No especificado';
+    const estado = item.estado || 'No especificado';
+
+    resultItem.innerHTML = `
+        <div class="result-content">
+            <div style="
+                font-weight: bold;
+                font-size: 16px;
+                color: #007bff;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            ">
+                <span>🚇</span>
+                ${nombre}
+            </div>
+            <div style="
+                color: #6c757d;
+                margin-bottom: 10px;
+                line-height: 1.4;
+                font-size: 14px;
+            ">
+                ${descripcion}
+            </div>
+            <div style="
+                font-size: 12px;
+                color: #9ca3af;
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+            ">
+                <span><strong>📍 Zona:</strong> ${zona}</span>
+                ${tipo !== 'No especificado' ? `<span><strong>🏢 Tipo:</strong> ${tipo}</span>` : ''}
+                ${estado !== 'No especificado' ? `<span><strong>⚡ Estado:</strong> ${estado}</span>` : ''}
+            </div>
+        </div>
+    `;
+
+    // Efectos hover
+    resultItem.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        this.style.borderColor = '#007bff';
+    });
+
+    resultItem.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+        this.style.borderColor = '#e9ecef';
+    });
+
+    // Click para mostrar detalles
+    resultItem.addEventListener('click', function() {
+        console.log('Mostrando detalles de:', nombre);
+        showItemDetails(item);
+    });
+
+    return resultItem;
+}
+
+function showItemDetails(item) {
+    console.log('=== MOSTRANDO DETALLES DE ITEM ===');
+    
+    const modal = document.getElementById('detailModal');
+    const content = document.getElementById('modalContent');
+    
+    if (!modal || !content) {
+        console.error('Modal de detalles no encontrado');
+        alert('Modal de detalles no disponible');
+        return;
+    }
+
+    const nombre = item.nombre_estacion || item.nombre || item.destino_zona || 'Sin nombre';
+    const zona = item.destino_zona || 'No especificada';
+    const descripcion = item.descripcion || 'Sin descripción disponible';
+    const tipo = item.tipo_estacion || 'No especificado';
+    const estado = item.estado || 'No especificado';
+    
+    content.innerHTML = `
+        <div style="text-align: right; margin-bottom: 20px;">
+            <span onclick="closeModal()" style="
+                cursor: pointer;
+                font-size: 24px;
+                color: #6c757d;
+                font-weight: bold;
+            ">&times;</span>
+        </div>
+        <h2 style="color: #0f172a; margin-bottom: 16px; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+            <span>🚇</span>
+            ${nombre}
+        </h2>
+        <p style="margin-bottom: 24px; color: #64748b; line-height: 1.6;">${descripcion}</p>
+        
+        <div style="
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        ">
+            <h3 style="margin-top: 0; color: #495057;">Información Detallada</h3>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center;">
+                <strong>📍 Zona de destino:</strong> <span>${zona}</span>
+                <strong>🏢 Tipo de estación:</strong> <span>${tipo}</span>
+                <strong>⚡ Estado:</strong> <span>${estado}</span>
+                ${item.coordenadas ? `<strong>🗺️ Coordenadas:</strong> <span>${item.coordenadas}</span>` : ''}
+                ${item.direccion ? `<strong>📮 Dirección:</strong> <span>${item.direccion}</span>` : ''}
+            </div>
+        </div>
+        
+        <div style="
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin-bottom: 20px;
+        ">
+            <strong>💡 Información:</strong> 
+            Los datos mostrados provienen del sistema de información de transporte público de Bogotá.
+        </div>
+        
+        <div style="margin-top: 24px; text-align: right;">
+            <button onclick="closeModal()" style="
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+            ">Cerrar</button>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+    console.log('Modal de detalles mostrado');
+}
+
+function showDetails(place) {
+    const modal = document.getElementById('detailModal');
+    const content = document.getElementById('modalContent');
+    
+    if (!modal || !content) {
+        console.error('Modal no encontrado para lugar:', place);
+        return;
+    }
+    
+    const placeDetails = {
+        candelaria: {
+            title: "La Candelaria",
+            description: "El centro histórico de Bogotá, donde se encuentran los principales museos, teatros y sitios de interés cultural de la capital.",
+            details: `
+                <div style="margin-bottom: 20px;">
+                    <strong>Ubicación:</strong> Centro de Bogotá<br>
+                    <strong>Horarios:</strong> 24 horas<br>
+                    <strong>Acceso:</strong> Gratuito<br>
+                    <strong>Transporte:</strong> Estación TransMilenio Las Aguas
+                </div>
+                <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                    <strong>Recomendación:</strong> Visita en las mañanas para evitar multitudes y aprovecha los tours guiados gratuitos disponibles.
+                </div>
+            `
+        },
+        monserrate: {
+            title: "Cerro de Monserrate",
+            description: "A 3,152 metros sobre el nivel del mar, Monserrate ofrece la vista panorámica más espectacular de Bogotá.",
+            details: `
+                <div style="margin-bottom: 20px;">
+                    <strong>Altura:</strong> 3,152 m.s.n.m.<br>
+                    <strong>Horarios:</strong> 6:30 AM - 8:00 PM<br>
+                    <strong>Teleférico:</strong> $25,000 COP<br>
+                    <strong>Funicular:</strong> Disponible como alternativa
+                </div>
+                <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                    <strong>Consejo:</strong> Lleva abrigo, la temperatura puede descender significativamente en la cima.
+                </div>
+            `
+        },
+        palacio: {
+            title: "Palacio Bolívar",
+            description: "Sede del Congreso de la República, ejemplo excepcional de arquitectura neoclásica en el corazón de la capital.",
+            details: `
+                <div style="margin-bottom: 20px;">
+                    <strong>Función:</strong> Sede del Congreso de Colombia<br>
+                    <strong>Visitas:</strong> Lunes a Viernes<br>
+                    <strong>Requisitos:</strong> Previa cita<br>
+                    <strong>Entrada:</strong> Gratuita con documento de identidad
+                </div>
+                <div style="background-color: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #1e40af;">
+                    <strong>Importante:</strong> Las visitas deben agendarse con anticipación a través del sitio web oficial del Congreso.
+                </div>
+            `
+        }
+    };
+    
+    const info = placeDetails[place];
+    if (info) {
+        content.innerHTML = `
+            <h2 style="color: #0f172a; margin-bottom: 16px; font-size: 1.5rem;">${info.title}</h2>
+            <p style="margin-bottom: 24px; color: #64748b; line-height: 1.6;">${info.description}</p>
+            ${info.details}
+            <div style="margin-top: 24px; text-align: right;">
+                <button onclick="closeModal()" style="
+                    background: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                ">Cerrar</button>
+            </div>
+        `;
+        
+        modal.style.display = 'block';
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('detailModal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log('Modal de detalles cerrado');
+    }
+}
+
+function closeSearchModal() {
+    const modal = document.getElementById('searchModal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log('Modal de búsqueda cerrado');
+    }
+}
+
+function toggleMapInteraction() {
+    alert('Funcionalidad de mapa interactivo. En la implementación completa, aquí se abriría un mapa detallado de Bogotá con marcadores de todos los puntos de interés.');
+}
+
+function setupSmoothScrolling() {
+    // Configurar navegación suave para enlaces internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Exportar funciones si se usa como módulo
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        setActiveFilter,
+        performSearch,
+        showDetails,
+        closeModal,
+        closeSearchModal,
+        toggleMapInteraction
+    };
+}
+
+console.log('🚀 Script de Bogotá Guide cargado correctamente');
     </script>
 </body>
 </html>
