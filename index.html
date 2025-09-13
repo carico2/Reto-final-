@@ -631,6 +631,49 @@ button:active {
                 <a href="#turismo">Turismo</a>
                 <a href="#eventos">Eventos</a>
             </nav>
+            <button id="btnGenerarReporte" class="btn-primary" style="margin-left: auto; padding: 8px 16px; font-size: 14px;">Generar Reporte Básico</button>
+            <script>
+                document.getElementById('btnGenerarReporte').addEventListener('click', async () => {
+                    const apiUrl = "https://www.datos.gov.co/resource/2pnw-mmge.json?$limit=10";
+                    try {
+                        const response = await fetch(apiUrl);
+                        if (!response.ok) {
+                            alert('Error al obtener datos de la API: ' + response.statusText);
+                            return;
+                        }
+                        const data = await response.json();
+                        if (!data || data.length === 0) {
+                            alert('No se encontraron datos en la API.');
+                            return;
+                        }
+                        // Prepare CSV content
+                        const csvRows = [];
+                        // Header
+                        csvRows.push(['Nombre Estacion', 'Latitud', 'Longitud'].join(','));
+                        // Data rows
+                        data.forEach(item => {
+                            const nombre = item.nombre_estacion ? `"${item.nombre_estacion.replace(/"/g, '""')}"` : '';
+                            const lat = item.latitud || '';
+                            const lon = item.longitud || '';
+                            csvRows.push([nombre, lat, lon].join(','));
+                        });
+                        const csvString = csvRows.join('\n');
+                        // Create a blob and trigger download
+                        const blob = new Blob([csvString], { type: 'text/csv' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.setAttribute('hidden', '');
+                        a.setAttribute('href', url);
+                        a.setAttribute('download', 'reporte_basico.csv');
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                        alert('Error al generar el reporte: ' + error.message);
+                    }
+                });
+            </script>
             <button class="search-btn">Buscar destino</button>
             <!-- From Uiverse.io by vinodjangid07 --> 
 <button class="button">
@@ -862,6 +905,11 @@ button:active {
                     <div class="stat-value" style="color: #ca8a04;">1,540</div>
                     <div class="stat-label">Usuarios</div>
                 </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <form action="generate_report.php" method="post">
+                    <button type="submit" class="btn-primary">Generar Reporte Básico</button>
+                </form>
             </div>
         </section>
     </div>
