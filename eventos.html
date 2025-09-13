@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - Descubre Bogotá D.C.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s ease;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #1e40af;
+            border-bottom-color: #1e40af;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hero Section Eventos */
+        .hero-eventos {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-eventos::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(147, 51, 234, 0.05));
+            z-index: 0;
+        }
+
+        .hero-eventos-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-eventos h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            letter-spacing: -0.025em;
+        }
+
+        .hero-eventos p {
+            color: #64748b;
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Calendar Navigation */
+        .calendar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-nav button {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: #1d4ed8;
+        }
+
+        .current-month {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: -0.025em;
+        }
+
+        .section-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .filter-btn.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        /* Event Cards */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .event-date {
+            background: linear-gradient(135deg, #1e40af, #3730a3);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .event-date-day {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-date-month {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .event-content {
+            padding: 24px;
+        }
+
+        .event-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .category-cultural { background: #dbeafe; color: #1e40af; }
+        .category-musical { background: #f3e8ff; color: #7c3aed; }
+        .category-gastronomico { background: #fef3c7; color: #d97706; }
+        .category-deportivo { background: #dcfce7; color: #16a34a; }
+        .category-familiar { background: #fce7f3; color: #ec4899; }
+        .category-festival { background: #ffedd5; color: #ea580c; }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .event-description {
+            color: #64748b;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        .event-price {
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .event-price.free {
+            color: #16a34a;
+        }
+
+        .btn-primary {
+            background: #1e40af;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* Featured Events */
+        .featured-events {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 60px;
+            color: white;
+            text-align: center;
+        }
+
+        .featured-events h2 {
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .featured-events p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.125rem;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .featured-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .featured-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .featured-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .featured-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s ease;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .close:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-eventos h1 {
+                font-size: 2.75rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .section-filter {
+                flex-wrap: wrap;
+            }
+
+            .filter-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .hero-eventos {
+                padding: 40px 24px;
+            }
+
+            .hero-eventos h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero-eventos p {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-events {
+                padding: 30px 20px;
+            }
+
+            .calendar-nav {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .current-month {
+                min-width: auto;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">Bogotá Travel</a>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="cultura.html">Cultura</a>
+                <a href="gastronomia.html">Gastronomía</a>
+                <a href="turismo.html">Turismo</a>
+                <a href="eventos.html" class="active">Eventos</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section Eventos -->
+        <section class="hero-eventos">
+            <div class="hero-eventos-content">
+                <h1>Eventos en Bogotá</h1>
+                <p>Vive la agenda cultural más vibrante de Colombia. Conciertos, festivales, exposiciones y experiencias únicas te esperan en cada rincón de la capital.</p>
+                
+                <div class="stats-section">
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Eventos mensuales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Espacios culturales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Festivales anuales</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">365</div>
+                        <div class="stat-label">Días de cultura</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calendar Navigation -->
+        <div class="calendar-nav">
+            <button onclick="previousMonth()">← Anterior</button>
+            <div class="current-month" id="currentMonth">Septiembre 2025</div>
+            <button onclick="nextMonth()">Siguiente →</button>
+        </div>
+
+        <!-- Eventos Destacados -->
+        <section class="section">
+            <div class="section-header">
+                <h2>Eventos Próximos</h2>
+                <div class="section-filter">
+                    <button class="filter-btn active" onclick="filterEvents('todos')">Todos</button>
+                    <button class="filter-btn" onclick="filterEvents('cultural')">Cultural</button>
+                    <button class="filter-btn" onclick="filterEvents('musical')">Musical</button>
+                    <button class="filter-btn" onclick="filterEvents('gastronomico')">Gastronómico</button>
+                    <button class="filter-btn" onclick="filterEvents('deportivo')">Deportivo</button>
+                    <button class="filter-btn" onclick="filterEvents('familiar')">Familiar</button>
+                </div>
+            </div>
+            
+            <div class="events-grid" id="eventsGrid">
+                <div class="event-card" data-category="festival">
+                    <div class="event-date">
+                        <div class="event-date-day">21</div>
+                        <div class="event-date-month">SEP</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-festival">Festival</div>
+                        <div class="event-title">Festival de la Chicha, la Vida y la Dicha</div>
+                        <div class="event-description">Celebración tradicional con música folclórica, comida típica y actividades culturales en honor a la bebida ancestral muisca.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>10:00 AM - 8:00 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>Parque de la 93</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>🎫</span>
+                                <span>Inscripción previa requerida</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price free">Entrada gratuita</div>
+                            <button class="btn-primary" onclick="showEventDetails('chicha')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-category="musical">
+                    <div class="event-date">
+                        <div class="event-date-day">28</div>
+                        <div class="event-date-month">SEP</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-musical">Musical</div>
+                        <div class="event-title">Concierto Sinfónico en el Simón Bolívar</div>
+                        <div class="event-description">La Orquesta Filarmónica de Bogotá presenta un repertorio clásico bajo las estrellas en el parque más grande de la ciudad.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>7:30 PM - 9:30 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>Parque Simón Bolívar</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>🎼</span>
+                                <span>Orquesta Filarmónica de Bogotá</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price free">Entrada gratuita</div>
+                            <button class="btn-primary" onclick="showEventDetails('concierto')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-category="cultural">
+                    <div class="event-date">
+                        <div class="event-date-day">05</div>
+                        <div class="event-date-month">OCT</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-cultural">Cultural</div>
+                        <div class="event-title">Noche de los Museos</div>
+                        <div class="event-description">Más de 40 museos abren sus puertas gratuitamente con actividades especiales, exposiciones exclusivas y experiencias interactivas.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>6:00 PM - 11:00 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>40+ museos de la ciudad</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>🚌</span>
+                                <span>Transporte gratuito</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price free">Entrada gratuita</div>
+                            <button class="btn-primary" onclick="showEventDetails('museos')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-category="gastronomico">
+                    <div class="event-date">
+                        <div class="event-date-day">12</div>
+                        <div class="event-date-month">OCT</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-gastronomico">Gastronómico</div>
+                        <div class="event-title">Bogotá Food Festival</div>
+                        <div class="event-description">Festival gastronómico con los mejores restaurantes de la ciudad, food trucks, catas de café y experiencias culinarias únicas.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>11:00 AM - 10:00 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>Centro de Convenciones Corferias</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>👨‍🍳</span>
+                                <span>50+ restaurantes participantes</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price">$25.000 - $45.000</div>
+                            <button class="btn-primary" onclick="showEventDetails('food')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-category="familiar">
+                    <div class="event-date">
+                        <div class="event-date-day">19</div>
+                        <div class="event-date-month">OCT</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-familiar">Familiar</div>
+                        <div class="event-title">Festival de Cometas</div>
+                        <div class="event-description">Evento familiar con talleres de cometas, espectáculos aéreos y competencias. Perfecto para disfrutar en familia los vientos de octubre.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>9:00 AM - 5:00 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>Parque El Tunal</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>🪁</span>
+                                <span>Materiales incluidos</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price free">Entrada gratuita</div>
+                            <button class="btn-primary" onclick="showEventDetails('cometas')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card" data-category="deportivo">
+                    <div class="event-date">
+                        <div class="event-date-day">26</div>
+                        <div class="event-date-month">OCT</div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-category category-deportivo">Deportivo</div>
+                        <div class="event-title">Maratón Internacional de Bogotá</div>
+                        <div class="event-description">La carrera más importante del país con recorridos de 5K, 10K, 21K y 42K atravesando los lugares más emblemáticos de la ciudad.</div>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <span>🕒</span>
+                                <span>6:00 AM - 2:00 PM</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>📍</span>
+                                <span>Salida: Parque Simón Bolívar</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <span>🏃‍♂️</span>
+                                <span>15,000+ participantes esperados</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-price">$45.000 - $120.000</div>
+                            <button class="btn-primary" onclick="showEventDetails('maraton')">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Section -->
+        <section class="featured-events">
+            <h2>Próximos Grandes Eventos</h2>
+            <p>No te pierdas los eventos más esperados del año en Bogotá. Experiencias únicas que hacen de nuestra ciudad un destino cultural incomparable</p>
+            
+            <div class="featured-grid">
+                <div class="featured-item">
+                    <div class="featured-icon">🎭</div>
+                    <div class="featured-title">Festival Iberoamericano de Teatro</div>
+                    <div class="featured-description">El festival de artes escénicas más importante de América Latina llega en abril</div>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">📚</div>
+                    <div class="featured-title">Feria del Libro de Bogotá</div>
+                    <div class="featured-description">La cita literaria más grande del país con autores internacionales</div>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">🎸</div>
+                    <div class="featured-title">Rock al Parque</div>
+                    <div class="featured-description">El festival de rock gratuito más grande de América Latina</div>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">🎨</div>
+                    <div class="featured-title">ArtBO</div>
+                    <div class="featured-description">La feria de arte contemporáneo que reúne galerías internacionales</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Detalles del Evento</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
