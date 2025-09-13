@@ -881,6 +881,18 @@ button:active {
         </div>
     </div>
 
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSearchModal()">&times;</span>
+            <h2 style="color: #0f172a; margin-bottom: 16px; font-size: 1.5rem;">Resultados de Búsqueda</h2>
+            <div id="searchResultsContainer"></div>
+            <div style="margin-top: 24px; text-align: right;">
+                <button class="btn-primary" onclick="closeSearchModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let activeFilter = 'cultura';
         let isSearching = false;
@@ -924,67 +936,76 @@ button:active {
 
         function performSearch() {
             if (isSearching) return;
-            
+
             const searchTerm = document.getElementById('searchInput').value;
-            const resultsSection = document.getElementById('searchResults');
-            const resultsContainer = document.getElementById('resultsContainer');
-            const searchButton = document.querySelector('.search-button');
+            const searchModal = document.getElementById('searchModal');
+            const searchResultsContainer = document.getElementById('searchResultsContainer');
             const searchText = document.getElementById('searchText');
             const loadingSpinner = document.getElementById('loadingSpinner');
-            
+
             if (searchTerm.trim() === '') {
-                resultsSection.style.display = 'none';
+                alert('Por favor, ingresa un término de búsqueda.');
                 return;
             }
+
+            console.log('Iniciando búsqueda para:', searchTerm);
 
             isSearching = true;
             searchText.style.display = 'none';
             loadingSpinner.style.display = 'inline-block';
 
-            setTimeout(() => {
-                resultsSection.style.display = 'block';
-                
-                const mockResults = [
-                    {
-                        title: "Museo del Oro",
-                        description: "La colección de arte precolombino más importante del mundo",
-                        image: "img-oro"
-                    },
-                    {
-                        title: "Parque Simón Bolívar",
-                        description: "El pulmón verde más grande de Bogotá",
-                        image: "img-parque"
-                    },
-                    {
-                        title: "Zona Rosa",
-                        description: "Distrito gastronómico y de entretenimiento",
-                        image: "img-zona-rosa"
+            // Show modal immediately with loading message
+            searchResultsContainer.innerHTML = '<p>Buscando...</p>';
+            if (searchModal) {
+                searchModal.style.display = 'block';
+                console.log('Modal mostrado');
+            } else {
+                alert('No se pudo encontrar el modal de búsqueda.');
+                return;
+            }
+
+            // Fetch data from Bogotá open data API filtering by destino_zona
+fetch(`https://www.datos.gov.co/resource/2pnw-mmge.json?q=${encodeURIComponent(searchTerm)}`)
+                .then(response => {
+                    console.log('Respuesta de API:', response.status, response.statusText);
+                    if (!response.ok) {
+                        throw new Error(`Error al obtener datos de la API: ${response.status} ${response.statusText}`);
                     }
-                ];
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Datos recibidos:', data);
+                    let results = data;
 
-                resultsContainer.innerHTML = '';
-                mockResults.forEach((result) => {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'results-item';
-                    resultItem.innerHTML = `
-                        <div class="results-image ${result.image}"></div>
-                        <div class="results-content">
-                            <div class="results-title">${result.title}</div>
-                            <div class="results-description">${result.description}</div>
-                        </div>
-                        <div style="padding: 20px;">
-                            <button class="btn-primary">Visitar</button>
-                        </div>
-                    `;
-                    resultsContainer.appendChild(resultItem);
+                    searchResultsContainer.innerHTML = '';
+
+                    if (!results || results.length === 0) {
+                        searchResultsContainer.innerHTML = '<p>No se encontraron resultados para la búsqueda.</p>';
+                    } else {
+                        results.forEach(item => {
+                            const resultItem = document.createElement('div');
+                            resultItem.className = 'results-item';
+                            resultItem.innerHTML = `
+                                <div class="results-content">
+                                    <div class="results-title">${item.nombre_estacion || item.nombre || 'Sin nombre'}</div>
+                                    <div class="results-description">${item.descripcion || `Zona: ${item.destino_zona || 'N/A'}`}</div>
+                                </div>
+                            `;
+                            searchResultsContainer.appendChild(resultItem);
+                        });
+                    }
+
+                    isSearching = false;
+                    searchText.style.display = 'inline';
+                    loadingSpinner.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error en la búsqueda:', error);
+                    searchResultsContainer.innerHTML = '<p>Error al realizar la búsqueda. Por favor, intenta de nuevo más tarde.</p>';
+                    isSearching = false;
+                    searchText.style.display = 'inline';
+                    loadingSpinner.style.display = 'none';
                 });
-
-                isSearching = false;
-                searchText.style.display = 'inline';
-                loadingSpinner.style.display = 'none';
-                
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }, 1000);
         }
 
         function showDetails(place) {
@@ -1058,15 +1079,23 @@ button:active {
             document.getElementById('detailModal').style.display = 'none';
         }
 
+        function closeSearchModal() {
+            document.getElementById('searchModal').style.display = 'none';
+        }
+
         function toggleMapInteraction() {
             alert('Funcionalidad de mapa interactivo. En la implementación completa, aquí se abriría un mapa detallado de Bogotá con marcadores de todos los puntos de interés.');
         }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('detailModal');
-            if (event.target === modal) {
+            const detailModal = document.getElementById('detailModal');
+            const searchModal = document.getElementById('searchModal');
+            if (event.target === detailModal) {
                 closeModal();
+            }
+            if (event.target === searchModal) {
+                closeSearchModal();
             }
         }
 
