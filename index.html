@@ -631,31 +631,63 @@ button:active {
                 <a href="#turismo">Turismo</a>
                 <a href="#eventos">Eventos</a>
             </nav>
-            <!--<button id="btnGenerarReporte" class="btn-primary" style="margin-left: auto; padding: 8px 16px; font-size: 14px;">Generar Reporte Básico</button>-->
+            <button id="btnGenerarReporte" class="btn-primary" style="margin-left: auto; padding: 8px 16px; font-size: 14px;">Generar Reporte Básico</button>
             <script>
                 document.getElementById('btnGenerarReporte').addEventListener('click', async () => {
-                    const apiUrl = "https://www.datos.gov.co/resource/2pnw-mmge.json?$limit=10";
+                    // API endpoint for Rutas Zonales del SITP dataset
+                    const apiUrl = "https://gis.transmilenio.gov.co/arcgis/rest/services/Zonal/consulta_rutas_zonales/MapServer/0/query?where=1%3D1&outFields=*&f=json&resultRecordCount=100";
                     try {
                         const response = await fetch(apiUrl);
                         if (!response.ok) {
                             alert('Error al obtener datos de la API: ' + response.statusText);
                             return;
                         }
-                        const data = await response.json();
+                        const json = await response.json();
+                        const data = json.features;
                         if (!data || data.length === 0) {
                             alert('No se encontraron datos en la API.');
                             return;
                         }
                         // Prepare CSV content
                         const csvRows = [];
-                        // Header
-                        csvRows.push(['Nombre Estacion', 'Latitud', 'Longitud'].join(','));
+                        // Header - all fields from metadata
+                        const headers = [
+                            "abreviatura_destino_zona_sitp",
+                            "codigo_definitivo_ruta_zonal",
+                            "delega_ruta_zonal",
+                            "denominacion_ruta_zonal",
+                            "destino_ruta_zonal",
+                            "destino_zona_sitp",
+                            "fecha_implementacion_ruta_zonal",
+                            "globalid",
+                            "localidad_destino_ruta_zonal",
+                            "localidad_origen_ruta_zonal",
+                            "longitud_ruta_zonal",
+                            "objectid",
+                            "operador_ruta_zonal",
+                            "origen_ruta_zonal",
+                            "route_id_ruta_zonal",
+                            "route_name_ruta_zonal",
+                            "tipo_operacion",
+                            "tipo_ruta_zonal",
+                            "tipo_servicio_ruta_zonal",
+                            "zona_destino_ruta_zonal",
+                            "zona_origen_ruta_zonal"
+                        ];
+                        csvRows.push(headers.join(','));
                         // Data rows
                         data.forEach(item => {
-                            const nombre = item.nombre_estacion ? `"${item.nombre_estacion.replace(/"/g, '""')}"` : '';
-                            const lat = item.latitud || '';
-                            const lon = item.longitud || '';
-                            csvRows.push([nombre, lat, lon].join(','));
+                            const attributes = item.attributes;
+                            const row = headers.map(field => {
+                                let val = attributes[field];
+                                if (val === null || val === undefined) val = '';
+                                // Escape quotes in strings
+                                if (typeof val === 'string') {
+                                    val = `"${val.replace(/"/g, '""')}"`;
+                                }
+                                return val;
+                            });
+                            csvRows.push(row.join(','));
                         });
                         const csvString = csvRows.join('\n');
                         // Create a blob and trigger download
@@ -664,7 +696,7 @@ button:active {
                         const a = document.createElement('a');
                         a.setAttribute('hidden', '');
                         a.setAttribute('href', url);
-                        a.setAttribute('download', 'reporte_basico.csv');
+                        a.setAttribute('download', 'rutas_zonales_sitp.csv');
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
