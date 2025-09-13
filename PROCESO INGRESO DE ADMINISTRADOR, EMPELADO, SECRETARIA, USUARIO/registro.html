@@ -6,7 +6,7 @@
   <title>Registro - Ing Aya</title>
   <style>
     body {
-      background-image: url(mansion.jpg);
+      background-image: url('https://monserrate.co/uploads/site/home/gallery/landscape/photo-19-2x.jpg');
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,19 +18,22 @@
     }
 
     .formulario {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-      border: 2px solid black;
+      background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(60px);
+    padding: 50px;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    text-align: center;
+    color: white;
+    max-width: 500px;
+    width: 100%;
+      
     }
 
     .formulario h2 {
       text-align: center;
       margin-bottom: 20px;
-      color: #002fff;
+      color: #ffffff;
     }
 
     .formulario input {
@@ -40,14 +43,16 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       font-size: 16px;
+      
+      
     }
 
     .formulario .boton {
       display: block;
       width: 100%;
       text-align: center;
-      background-color: #002fff;
-      color: white;
+      background-color: #ffffff;
+      color: rgb(2, 2, 2);
       padding: 12px;
       margin-top: 15px;
       border-radius: 6px;
@@ -57,7 +62,7 @@
     }
 
     .formulario .boton:hover {
-      background-color: #001bc4;
+      background-color: #000000;
     }
 
     .formulario .registro {
@@ -73,9 +78,42 @@
     .formulario .registro a:hover {
       text-decoration: underline;
     }
+    .header-login {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    margin: 0px 0px 30px 0px;
+    width: 100%;
+    background: linear-gradient(to bottom, #eee, #ccc);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.logo-head {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+.logo-head img {
+    height: 70px;
+    margin-right: 10px;
+}
+
+.nom_emp {
+    font-size: 25px;
+    font-weight: bold;
+}
   </style>
 </head>
 <body>
+  <header class="header-login">
+  <a href="#" class="logo-head">
+      <img src="Bogota-travel.png" alt="">
+      <h2 class="nom_emp">Bogotá Travel</h2>
+    </a>
+  </header>
   <div class="formulario">
     <h2>Crear Cuenta</h2>
     <form onsubmit="redirigirAlInicio(event)">
