@@ -154,31 +154,39 @@ button:active {
 
         /* Main Container */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 24px;
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0;
+            padding: 40px 0;
+            /* background-image removido para que no se muestre en todo el container */
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
             margin-bottom: 60px;
-            background: white;
+            background: transparent;
             border-radius: 12px;
             padding: 60px 40px;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            background: linear-gradient(rgba(0, 0, 0, 0.233), rgba(0, 0, 0, 0.185)),
+                url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Plaza_de_Bolivar%2C_Bogota%2C_Colombia_%285770632336%29.jpg/1200px-Plaza_de_Bolivar%2C_Bogota%2C_Colombia_%285770632336%29.jpg') no-repeat center center / cover;
+-image: url("imagenes/museo.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .hero h1 {
             font-size: 3.5rem;
             font-weight: 700;
-            color: #0f172a;
+            color: #000000;
             margin-bottom: 16px;
             letter-spacing: -0.025em;
         }
 
         .hero p {
-            color: #64748b;
+            color: #000000;
             font-size: 1.25rem;
             margin-bottom: 40px;
             max-width: 600px;
@@ -563,7 +571,10 @@ button:active {
             }
 
             .container {
-                padding: 20px 16px;
+                width: 100vw;
+                max-width: 100vw;
+                margin: 0;
+                padding: 20px 0;
             }
 
             .card-grid {
@@ -604,16 +615,16 @@ button:active {
         }
 
         /* Image placeholders with gradients */
-        .img-candelaria { background: linear-gradient(135deg, #dc2626, #b91c1c); }
-        .img-monserrate { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-        .img-palacio { background: linear-gradient(135deg, #059669, #047857); }
+        .img-candelaria { background-image: url("imagenes/candelaria.jpg"); }
+        .img-monserrate { background-image: url("imagenes/monserrate.jpg"); }
+        .img-palacio { background-image: url("imagenes/palaciobolivar.jpg"); }
         .img-festival { background: linear-gradient(135deg, #dc2626, #b91c1c); }
         .img-concierto { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
         .img-arte { background: linear-gradient(135deg, #0891b2, #0e7490); }
         .img-ciclorruta { background: linear-gradient(135deg, #ea580c, #dc2626); }
         .img-humedales { background: linear-gradient(135deg, #059669, #047857); }
         .img-ruta-candelaria { background: linear-gradient(135deg, #7c2d12, #a16207); }
-        .img-museo-botero { background: linear-gradient(135deg, #be123c, #a21caf); }
+        .img-museo-botero { background-image: url("imagenes/museo.jpg");}
         .img-oro { background: linear-gradient(135deg, #ca8a04, #a16207); }
         .img-parque { background: linear-gradient(135deg, #059669, #047857); }
         .img-zona-rosa { background: linear-gradient(135deg, #dc2626, #b91c1c); }
